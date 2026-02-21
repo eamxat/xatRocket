@@ -58,6 +58,10 @@
             -webkit-animation: starsMove 25s linear infinite;
             animation: starsMove 25s linear infinite;
             will-change: transform;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         .stars-md {
@@ -70,6 +74,10 @@
             -webkit-animation: starsMove 18s linear infinite;
             animation: starsMove 18s linear infinite;
             will-change: transform;
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         /* --- CLOUDS --- */
@@ -94,8 +102,13 @@
             background-repeat: repeat-x;
             background-position: bottom left;
             will-change: transform;
-            -webkit-transform: translateZ(0); /* Aceleración por GPU */
-            transform: translateZ(0);
+            /* Aceleración estricta por hardware 3D para GPU */
+            -webkit-transform: translate3d(0, 0, 0);
+            transform: translate3d(0, 0, 0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-perspective: 1000px;
+            perspective: 1000px;
         }
 
         .cloud-back {
@@ -132,12 +145,15 @@
             left: 50%;
             -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-            /* Tamaños dinámicos para proteger móviles estrechos, respetando máximos */
+            /* Tamaños dinámicos vmin para que no se desborde en móviles pequeños */
             width: 80vmin;
             height: 80vmin;
             max-width: 380px;
             max-height: 380px;
             z-index: 20;
+            will-change: transform;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             -webkit-animation: floatRocket 6s ease-in-out infinite;
             animation: floatRocket 6s ease-in-out infinite;
         }
@@ -147,13 +163,16 @@
             height: 100%;
             -webkit-filter: drop-shadow(0 25px 40px rgba(0,0,0,0.5));
             filter: drop-shadow(0 25px 40px rgba(0,0,0,0.5));
-            overflow: visible; /* Soluciona recortes de sombras en Safari */
+            overflow: visible; /* Soluciona recortes del SVG y sus filtros en Safari/iOS */
         }
 
         /* --- FLAME ANIMATION --- */
         .flame-fixed {
             -webkit-transform-origin: 100px 150px;
             transform-origin: 100px 150px;
+            /* CRÍTICO: Fuerza a Safari y Firefox a calcular el origen basado en el lienzo del SVG (viewBox) y no en la propia forma, garantizando que el fuego no se desplace */
+            transform-box: view-box; 
+            will-change: transform;
             -webkit-animation: flameThrust 0.1s ease-in-out infinite alternate;
             animation: flameThrust 0.1s ease-in-out infinite alternate;
         }
@@ -161,6 +180,8 @@
         .flame-inner-fixed {
             -webkit-transform-origin: 100px 150px;
             transform-origin: 100px 150px;
+            transform-box: view-box;
+            will-change: transform;
             -webkit-animation: flameThrustInner 0.1s ease-in-out infinite alternate-reverse;
             animation: flameThrustInner 0.1s ease-in-out infinite alternate-reverse;
         }
@@ -187,7 +208,7 @@
             -webkit-transition: -webkit-transform 0.3s ease, opacity 0.3s ease;
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0.9;
-            -webkit-tap-highlight-color: transparent; /* Evita destello azul en móviles al tocar */
+            -webkit-tap-highlight-color: transparent; /* Evita recuadro azul táctil en Android/iOS */
         }
 
         .brand-link:hover, .brand-link:active {
@@ -214,7 +235,7 @@
             margin-left: 3px; 
         }
 
-        /* --- KEYFRAMES MULTI-NAVEGADOR --- */
+        /* --- KEYFRAMES COMPATIBLES (Soporte Multi-Navegador Asegurado) --- */
         @-webkit-keyframes starsMove {
             from { -webkit-transform: translateY(-50%); transform: translateY(-50%); }
             to { -webkit-transform: translateY(0%); transform: translateY(0%); }
@@ -299,7 +320,7 @@
 
         <!-- ROCKET -->
         <div class="rocket-container">
-            <svg viewBox="0 0 200 200" class="rocket-svg">
+            <svg viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet" class="rocket-svg">
                 <defs>
                     <!-- 1. Cuerpo Plateado (Silver Metallic) -->
                     <linearGradient id="silverBody_final" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -331,7 +352,7 @@
                         <stop offset="100%" stop-color="#ffcc00" />
                     </linearGradient>
 
-                    <filter id="glow_final">
+                    <filter id="glow_final" x="-20%" y="-20%" width="140%" height="140%">
                         <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                         <feMerge>
                             <feMergeNode in="coloredBlur"/>
@@ -362,7 +383,7 @@
                     <!-- Aleta Central (fondo) -->
                     <path d="M100 120 L100 155 L100 140 Z" fill="#003366" />
                     
-                    <!-- CUERPO PLATEADO (Punta Eliminada al fusionarse con el cuerpo base) -->
+                    <!-- CUERPO PLATEADO -->
                     <path d="M100 20 Q155 65 140 140 Q100 155 60 140 Q45 65 100 20 Z" fill="url(#silverBody_final)" />
                     
                     <!-- VENTANA -->
