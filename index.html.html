@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
     <title>XAT - Navigate Rocket</title>
+    
+    <!-- PRECARGA DE FUENTES (Garantiza que no haya fallbacks visibles en móviles) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Montserrat (Clon geométrico para Century Gothic) y Arimo (Métricas exactas para Arial) -->
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
     <style>
         /* --- RESET & BASE --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -209,6 +216,12 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0.9;
             -webkit-tap-highlight-color: transparent; /* Evita recuadro azul táctil en Android/iOS */
+            
+            /* --- RENDERIZADO ESTRICTO DE FUENTES --- */
+            -webkit-font-smoothing: antialiased; /* Suavizado en macOS/iOS */
+            -moz-osx-font-smoothing: grayscale; /* Suavizado en Firefox Mac */
+            text-rendering: optimizeLegibility; /* Prioriza geometría y kerning en todos los motores */
+            font-synthesis: none; /* Evita negritas falsas inyectadas por Safari/Chrome */
         }
 
         .brand-link:hover, .brand-link:active {
@@ -218,7 +231,8 @@
         }
 
         .text-xa {
-            font-family: 'Century Gothic', 'CenturyGothic', AppleGothic, sans-serif;
+            /* Fallbacks seguros integrados: Si no tiene Century Gothic, carga la web font exacta (Montserrat) */
+            font-family: 'Century Gothic', 'CenturyGothic', 'Montserrat', AppleGothic, sans-serif;
             font-weight: 700;
             font-size: 24px;
             color: white;
@@ -227,7 +241,8 @@
         }
 
         .text-t {
-            font-family: Arial, Helvetica, sans-serif;
+            /* Fallback exacto de Arial (Arimo) mediante Google Fonts para Android/iOS */
+            font-family: Arial, 'Arimo', Helvetica, sans-serif;
             font-weight: 700;
             font-size: 24px;
             color: white;
@@ -419,3 +434,4 @@
 
 </body>
 </html>
+
